@@ -11,6 +11,8 @@ const Todo: React.FC = () => {
   const { todos } = useSelector((state: RootState) => state.todos);
   const [newTodo, setNewTodo] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [filter, setFilter] = useState<'all' | 'completed' | 'incomplete'>('all');
+
 
   useEffect(() => {
     makeRequest.get<TodoType[]>('/todos')
@@ -37,6 +39,16 @@ const Todo: React.FC = () => {
   const handleCompleteAll = () => {
     dispatch(completeAllTodos());
   };
+
+  const filteredTodos = todos.filter((todo) => {
+    if (filter === 'completed') {
+      return todo.completed;
+    }
+    if (filter === 'incomplete') {
+      return !todo.completed;
+    }
+    return true;
+  });
   
 
   return (
@@ -52,6 +64,27 @@ const Todo: React.FC = () => {
       >
         Tout compléter
       </button>
+
+      <div className="mb-4">
+        <button
+          onClick={() => setFilter('all')}
+          className={`mr-2 ${filter === 'all' ? 'bg-blue-500' : 'bg-gray-200'} text-white p-2 rounded`}
+        >
+          Toutes
+        </button>
+        <button
+          onClick={() => setFilter('completed')}
+          className={`mr-2 ${filter === 'completed' ? 'bg-blue-500' : 'bg-gray-200'} text-white p-2 rounded`}
+        >
+          Terminées
+        </button>
+        <button
+          onClick={() => setFilter('incomplete')}
+          className={`mr-2 ${filter === 'incomplete' ? 'bg-blue-500' : 'bg-gray-200'} text-white p-2 rounded`}
+        >
+          Non terminées
+        </button>
+      </div>
 
       {error && (
         <div className="bg-red-100 text-red-500 p-2 mb-4 rounded">
@@ -76,7 +109,7 @@ const Todo: React.FC = () => {
       </div>
 
       <ul>
-        {todos.map((todo) => (
+        {filteredTodos.map((todo) => (
           <TodoItem key={todo.id} todo={todo} />
         ))}
       </ul>
