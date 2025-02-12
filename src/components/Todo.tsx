@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../redux/store';
-import { addTodo } from '../redux/todoSlice';
+import { addTodo, completeAllTodos } from '../redux/todoSlice';
 import { makeRequest } from '@/utils/axios';
 import TodoItem from './TodoItem';
 import { TodoType } from '@/@types/global';
@@ -33,6 +33,10 @@ const Todo: React.FC = () => {
     dispatch(addTodo(newTodoItem));
     setNewTodo('');
   };
+
+  const handleCompleteAll = () => {
+    dispatch(completeAllTodos());
+  };
   
 
   return (
@@ -41,6 +45,13 @@ const Todo: React.FC = () => {
       <h1 className="text-2xl font-bold text-center mb-4">
         Liste des Tâches
       </h1>
+
+      <button
+        onClick={handleCompleteAll}
+        className="bg-green-500 text-white p-2 rounded mb-4"
+      >
+        Tout compléter
+      </button>
 
       {error && (
         <div className="bg-red-100 text-red-500 p-2 mb-4 rounded">
